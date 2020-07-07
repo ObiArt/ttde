@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="letters.js"></script>
+        <title>Text to Discord Emojies</title>
+    </head>
+    <body style="font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;">
+        <center>
+            <div id="warning" style="color:red;"></div> <br>
+            <div id="resultbox"></div> <br>
+            <input type="text" id="textbox"> <br>
+            <input type="checkbox" id="repeating">
+            <label for="repeating">Allow repeating emojies?</label>
+        </center>
+        <script>
+            //i know it's ugly af
+            var resultbox = document.getElementById("resultbox")
+            var textbox = document.getElementById("textbox")
+            var checkbox = document.getElementById("repeating")
+            textbox.addEventListener('input', update)
+
+            function update(){
+                resultbox.textContent = ""
+                used = []
+                counter = 0
+                var tempVal = textbox.value.toLowerCase()
+                
+                while (tempVal != ""){
+                    worked = false
+
+                    if (tempVal[0] === " "){
+                        tempVal = tempVal.slice(1)
+                        resultbox.textContent += `_ `
+                        continue
+                    }
+                    for (const [key, value] of Object.entries(letter)){
+                        if (tempVal.slice(0, key.length) === key){
+                            if (!checkbox.checked){
+                                for (var i = 0; i < letter[key].length; i++){
+                                    if (used.find(element => element == letter[key][i]) == undefined){
+                                        used.push(letter[key][i])
+                                        worked = true
+                                        resultbox.textContent += `:${letter[key][i]}: `
+                                        tempVal = tempVal.slice(key.length)
+                                        break
+                                    }
+                                }
+                            } else {
+                                worked = true
+                                resultbox.textContent += `:${letter[key][0]}: `
+                                tempVal = tempVal.slice(key.length)
+                            }
+                        }
+                    }
+                    if (!worked){
+                        document.getElementById("warning").textContent = "this shit doesn't work"
+                        break
+                    } esle {
+                        document.getElementById("warning").textContent = ""
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
